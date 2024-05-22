@@ -46,7 +46,7 @@ def display_result(scraped_data):
         text_frame = ttk.Frame(frame)
         text_frame.grid(row=0, column=idx, padx=10, pady=10, sticky='nsew')
         
-        text_widget = tk.Text(text_frame, wrap='word', padx=10, pady=10, state='normal', width=40, height=30)
+        text_widget = tk.Text(text_frame, wrap='word', padx=10, pady=10, state='normal', width=40, height=47)
         text_widget.pack(side=tk.LEFT, fill='both', expand=True)
         
         scrollbar = ttk.Scrollbar(text_frame, command=text_widget.yview)

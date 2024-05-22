@@ -15,7 +15,7 @@ def make_request(url):
     }
     try:
         response = requests.get(url, headers=headers)
-        response.raise_for_status()  # Raise an exception for non-200 status codes
+        response.raise_for_status()
         logging.info(f"Successfully fetched URL: {url}")
         return response.text
     except requests.RequestException as e:

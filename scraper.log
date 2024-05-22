@@ -1750,3 +1750,47 @@
 2024-05-21 23:00:12,450 - INFO - Data saved to scraped_data.csv
 2024-05-21 23:00:12,450 - INFO - Data saved to scraped_data.json
 2024-05-21 23:00:12,450 - INFO - Completed the web scraping process
+2024-05-22 09:29:44,845 - INFO - Starting the web scraping process
+2024-05-22 09:29:44,853 - DEBUG - Starting new HTTPS connection (1): www.emag.ro:443
+2024-05-22 09:29:45,688 - DEBUG - https://www.emag.ro:443 "GET /telefon-mobil-apple-iphone-14-128gb-5g-purple-mpv03rx-a/pd/D62Y4LMBM/?ref=fam HTTP/1.1" 200 None
+2024-05-22 09:29:45,696 - INFO - Successfully fetched URL: https://www.emag.ro/telefon-mobil-apple-iphone-14-128gb-5g-purple-mpv03rx-a/pd/D62Y4LMBM/?ref=fam#Mov
+2024-05-22 09:29:45,870 - INFO - Successfully parsed HTML content
+2024-05-22 09:29:45,918 - INFO - Data saved to scraped_data.csv
+2024-05-22 09:29:45,918 - INFO - Data saved to scraped_data.json
+2024-05-22 09:29:45,918 - INFO - Completed the web scraping process
+2024-05-22 09:30:05,768 - INFO - Starting the web scraping process
+2024-05-22 09:30:05,768 - DEBUG - Starting new HTTPS connection (1): www.emag.ro:443
+2024-05-22 09:30:06,466 - DEBUG - https://www.emag.ro:443 "GET /telefon-mobil-apple-iphone-14-128gb-5g-purple-mpv03rx-a/pd/D62Y4LMBM/?ref=fam HTTP/1.1" 200 None
+2024-05-22 09:30:06,501 - INFO - Successfully fetched URL: https://www.emag.ro/telefon-mobil-apple-iphone-14-128gb-5g-purple-mpv03rx-a/pd/D62Y4LMBM/?ref=fam#Mov
+2024-05-22 09:30:06,785 - INFO - Successfully parsed HTML content
+2024-05-22 09:30:06,839 - INFO - Data saved to scraped_data.csv
+2024-05-22 09:30:06,839 - INFO - Data saved to scraped_data.json
+2024-05-22 09:30:06,839 - INFO - Completed the web scraping process
+2024-05-22 09:31:23,849 - INFO - Starting the web scraping process
+2024-05-22 09:31:23,857 - DEBUG - Starting new HTTPS connection (1): www.emag.ro:443
+2024-05-22 09:31:24,906 - DEBUG - https://www.emag.ro:443 "GET /telefon-mobil-apple-iphone-14-128gb-5g-purple-mpv03rx-a/pd/D62Y4LMBM/?ref=fam HTTP/1.1" 200 None
+2024-05-22 09:31:24,924 - INFO - Successfully fetched URL: https://www.emag.ro/telefon-mobil-apple-iphone-14-128gb-5g-purple-mpv03rx-a/pd/D62Y4LMBM/?ref=fam#Mov
+2024-05-22 09:31:25,156 - INFO - Successfully parsed HTML content
+2024-05-22 09:31:25,208 - INFO - Data saved to scraped_data.csv
+2024-05-22 09:31:25,216 - INFO - Data saved to scraped_data.json
+2024-05-22 09:31:25,216 - INFO - Completed the web scraping process
+2024-05-22 09:32:35,313 - INFO - Starting the web scraping process
+2024-05-22 09:32:35,322 - DEBUG - Starting new HTTPS connection (1): www.emag.ro:443
+2024-05-22 09:32:36,096 - DEBUG - https://www.emag.ro:443 "GET /telefon-mobil-apple-iphone-14-128gb-5g-purple-mpv03rx-a/pd/D62Y4LMBM/?ref=fam HTTP/1.1" 200 None
+2024-05-22 09:32:36,104 - INFO - Successfully fetched URL: https://www.emag.ro/telefon-mobil-apple-iphone-14-128gb-5g-purple-mpv03rx-a/pd/D62Y4LMBM/?ref=fam#Mov
+2024-05-22 09:32:36,274 - INFO - Successfully parsed HTML content
+2024-05-22 09:32:36,274 - DEBUG - Starting new HTTPS connection (1): www.emag.ro:443
+2024-05-22 09:32:36,981 - DEBUG - https://www.emag.ro:443 "GET /telefon-mobil-apple-iphone-14-128gb-5g-purple-mpv03rx-a/pd/D62Y4LMBM/?ref=fam HTTP/1.1" 200 None
+2024-05-22 09:32:36,998 - INFO - Successfully fetched URL: https://www.emag.ro/telefon-mobil-apple-iphone-14-128gb-5g-purple-mpv03rx-a/pd/D62Y4LMBM/?ref=fam#Mov
+2024-05-22 09:32:37,196 - INFO - Successfully parsed HTML content
+2024-05-22 09:32:37,196 - DEBUG - Starting new HTTPS connection (1): www.emag.ro:443
+2024-05-22 09:32:37,844 - DEBUG - https://www.emag.ro:443 "GET /telefon-mobil-apple-iphone-14-128gb-5g-purple-mpv03rx-a/pd/D62Y4LMBM/?ref=fam HTTP/1.1" 200 None
+2024-05-22 09:32:37,869 - INFO - Successfully fetched URL: https://www.emag.ro/telefon-mobil-apple-iphone-14-128gb-5g-purple-mpv03rx-a/pd/D62Y4LMBM/?ref=fam#Mov
+2024-05-22 09:32:38,043 - INFO - Successfully parsed HTML content
+2024-05-22 09:32:38,051 - DEBUG - Starting new HTTPS connection (1): www.emag.ro:443
+2024-05-22 09:32:39,136 - DEBUG - https://www.emag.ro:443 "GET /telefon-mobil-apple-iphone-14-128gb-5g-purple-mpv03rx-a/pd/D62Y4LMBM/?ref=fam HTTP/1.1" 200 None
+2024-05-22 09:32:39,159 - INFO - Successfully fetched URL: https://www.emag.ro/telefon-mobil-apple-iphone-14-128gb-5g-purple-mpv03rx-a/pd/D62Y4LMBM/?ref=fam#Mov
+2024-05-22 09:32:39,323 - INFO - Successfully parsed HTML content
+2024-05-22 09:32:39,505 - INFO - Data saved to scraped_data.csv
+2024-05-22 09:32:39,505 - INFO - Data saved to scraped_data.json
+2024-05-22 09:32:39,505 - INFO - Completed the web scraping process

@@ -13,7 +13,7 @@ def scrape_multiple_websites(urls):
     """    
     scraped_data = []
     
-    start_time = time.time()  # Înregistrare moment de început
+    start_time = time.time()
 
     # Concurrently scrape each website
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
@@ -29,7 +29,7 @@ def scrape_multiple_websites(urls):
     
     logging.info("Completed scraping all websites")
 
-    end_time = time.time()  # Înregistrare moment de sfârșit
-    total_time = end_time - start_time  # Calcul timp total
+    end_time = time.time()
+    total_time = end_time - start_time 
 
     return scraped_data, total_time
