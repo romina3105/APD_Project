@@ -1,78 +1,37 @@
-import tkinter as tk
-from tkinter import ttk, messagebox
-from web_scraper import scrape_website
 import logging
-from threading import Thread
 import time
 import csv
-import json
+import matplotlib.pyplot as plt
+from web_scraper import scrape_multiple_websites
+from utilities import make_request
+from bs4 import BeautifulSoup
 
 # Configure logging
 logging.basicConfig(filename='scraper.log', level=logging.DEBUG,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
-def display_result(scraped_data):
+def get_total_pages(category_url):
     """
-    Display the scraped data in a new window.
+    Get the total number of pages for a category.
     """
-    # Create a new window
-    result_window = tk.Toplevel(root)
-    result_window.title("Scraped Data")
+    html_content = make_request(category_url)
+    if not html_content:
+        return 0
 
-    # Create a canvas and a scrollbar
-    canvas = tk.Canvas(result_window)
-    scrollbar_x = ttk.Scrollbar(result_window, orient="horizontal", command=canvas.xview)
-    scrollbar_y = ttk.Scrollbar(result_window, orient="vertical", command=canvas.yview)
-    canvas.configure(xscrollcommand=scrollbar_x.set, yscrollcommand=scrollbar_y.set)
+    soup = BeautifulSoup(html_content, 'html.parser')
+    pagination = soup.find('div', class_='pagination-container')
+    if not pagination:
+        return 1
 
-    # Create a frame inside the canvas
-    frame = ttk.Frame(canvas)
-    frame.bind(
-        "<Configure>",
-        lambda e: canvas.configure(
-            scrollregion=canvas.bbox("all")
-        )
-    )
-    
-    canvas.create_window((0, 0), window=frame, anchor="nw")
+    pages = pagination.find_all('a')
+    total_pages = int(pages[-2].text) if pages else 1
+    return total_pages
 
-    # Pack the canvas and scrollbars
-    canvas.pack(side=tk.LEFT, fill='both', expand=True)
-    scrollbar_x.pack(side=tk.BOTTOM, fill='x')
-    scrollbar_y.pack(side=tk.RIGHT, fill='y')
-
-    # Insert data into separate Text widgets in a grid layout
-    for idx, data in enumerate(scraped_data):
-        text_frame = ttk.Frame(frame)
-        text_frame.grid(row=0, column=idx, padx=10, pady=10, sticky='nsew')
-        
-        text_widget = tk.Text(text_frame, wrap='word', padx=10, pady=10, state='normal', width=40, height=47)
-        text_widget.pack(side=tk.LEFT, fill='both', expand=True)
-        
-        scrollbar = ttk.Scrollbar(text_frame, command=text_widget.yview)
-        scrollbar.pack(side=tk.RIGHT, fill='y')
-        text_widget.config(yscrollcommand=scrollbar.set)
-
-        if "error" in data:
-            text_widget.insert(tk.END, f"Error scraping {data['url']}: {data['error']}\n\n")
-        else:
-            text_widget.insert(tk.END, f"Title of {data['url']}:\n\n{data['title']}\n\n")
-            text_widget.insert(tk.END, f"Price: {data['price']}\n\n")
-            text_widget.insert(tk.END, f"Description: {data['description']}\n\n")
-            text_widget.insert(tk.END, f"Disclaimer:\n{data['disclaimer']}\n\n")
-        
-        text_widget.config(state='disabled')
-
-def update_progress_message(status, total_time=None):
+def generate_category_urls(base_url, total_pages):
     """
-    Update the progress label with the completion message.
-    Update the time label with the total execution time.
+    Generate URLs for all pages in the category.
     """
-    progress_label.config(text=status)
-    if total_time:
-        time_label.config(text=f"Total execution time: {total_time:.2f} seconds")
-    else:
-        time_label.config(text="")
+    return [f"{base_url}/p{page}/c" for page in range(1, total_pages + 1)]
 
 def save_to_csv(scraped_data, filename='scraped_data.csv'):
     """
@@ -86,167 +45,57 @@ def save_to_csv(scraped_data, filename='scraped_data.csv'):
 
     logging.info(f"Data saved to {filename}")
 
-def save_to_json(scraped_data, filename='scraped_data.json'):
-    """
-    Save scraped data to a JSON file.
-    """
-    with open(filename, 'w', encoding='utf-8') as output_file:
-        json.dump(scraped_data, output_file, ensure_ascii=False, indent=4)
 
-    logging.info(f"Data saved to {filename}")
-
-def scrape_and_display(urls):
+def generate_bar_chart(scraped_data, filename='chart10.png'):
     """
-    Scrape the websites and display the results.
+    Generate a bar chart of the top 10 most expensive products.
+    """
+    top_10_products = sorted(scraped_data, key=lambda x: x['price'], reverse=True)[:10]
+    product_names = [product['title'] for product in top_10_products]
+    product_prices = [product['price'] for product in top_10_products]
+
+    plt.figure(figsize=(12, 8))
+    plt.barh(product_names, product_prices, color='skyblue')
+    plt.xlabel('Price')
+    plt.title('Top 10 Most Expensive Products')
+    plt.gca().invert_yaxis()
+    plt.savefig(filename)
+    plt.close()
+
+    logging.info(f"Bar chart saved to {filename}")
+
+def scrape_and_save(base_url):
+    """
+    Scrape the websites and save the results.
     """
     logging.info("Starting the web scraping process")
-    progress_label.config(text="Scraping in progress...")
 
-    def scrape_and_update():
-        start_time = time.time()  # Înregistrare moment de început
-        scraped_data = []
-
-        # Update progress bar maximum
-        progress_bar.config(maximum=len(urls))
-        
-        for i, url in enumerate(urls):
-            data = scrape_website(url)
-            scraped_data.append(data)
-            
-            # Update the progress bar
-            progress_bar['value'] = i + 1
-            root.update_idletasks()
-
-        end_time = time.time()  # Înregistrare moment de sfârșit
-        total_time = end_time - start_time  # Calcul timp total
-
-        display_result(scraped_data)
-        update_progress_message("Scraping completed", total_time)
-        
-        # Save scraped data to CSV and JSON files
-        save_to_csv(scraped_data)
-        save_to_json(scraped_data)
-
-        logging.info("Completed the web scraping process")
-
-    # Start scraping in a separate thread
-    thread = Thread(target=scrape_and_update)
-    thread.start()
-
-def add_url_entry():
-    """
-    Add a new URL entry field.
-    """
-    if len(url_entries) >= 5:
-        messagebox.showinfo("Maximum URLs reached", "You can add maximum 5 URLs.")
-        return
+    total_pages = get_total_pages(base_url)
+    urls = generate_category_urls(base_url, total_pages)
     
-    url_frame = ttk.Frame(urls_frame)
-    url_frame.grid(row=len(url_entries), column=0, pady=5, sticky='ew')
+    scraped_data, total_time = scrape_multiple_websites(urls)
 
-    url_entry = ttk.Entry(url_frame, width=50)
-    url_entry.pack(side=tk.LEFT, fill='x', expand=True)
-    
-    delete_button = ttk.Button(url_frame, text="-", command=lambda: remove_url_entry(url_frame))
-    delete_button.pack(side=tk.RIGHT)
+    # Save scraped data to CSV file
+    save_to_csv(scraped_data)
 
-    url_entries.append(url_frame)
+    # Generate bar chart for top 10 most expensive products
+    generate_bar_chart(scraped_data)
 
-def remove_url_entry(url_frame):
-    """
-    Remove a URL entry field.
-    """
-    if len(url_entries) > 1:
-        url_entries.remove(url_frame)
-        url_frame.destroy()
-    else:
-        messagebox.showwarning("Minimum URLs", "There must be at least one URL entry.")
+    # Calculate statistics
+    total_products = len(scraped_data)
+    prices = [product['price'] for product in scraped_data if product['price'] > 0]
+    avg_price = sum(prices) / len(prices) if prices else 0
+    min_price = min(prices) if prices else 0
+    max_price = max(prices) if prices else 0
 
-def validate_and_scrape():
-    """
-    Validate URL entries and start the scraping process if all are filled.
-    """
-    urls = [frame.winfo_children()[0].get() for frame in url_entries if frame.winfo_children()[0].get()]
-    if len(urls) < len(url_entries):
-        messagebox.showwarning("Incomplete URLs", "Please fill in all URL fields before scraping.")
-        return
-    scrape_and_display(urls)
+    print(f"Total execution time: {total_time:.2f} seconds")
+    print(f"Number of products extracted: {total_products}")
+    print(f"Average price: {avg_price :.2f}")
+    print(f"Minimum price: {min_price :.2f}")
+    print(f"Maximum price: {max_price :.2f}")
 
-def clear_results():
-    """
-    Clear all results displayed and reset all fields.
-    """
-    for widget in root.winfo_children():
-        if isinstance(widget, tk.Toplevel):
-            widget.destroy()
-    for entry in url_entries:
-        entry.winfo_children()[0].delete(0, tk.END)
-    progress_label.config(text="")
-    time_label.config(text="")
-    progress_bar['value'] = 0
+    logging.info("Completed the web scraping process")
 
-# Create the main window
-root = tk.Tk()
-root.title("Web Scraper")
-
-# Style configuration
-style = ttk.Style()
-style.configure("TButton", padding=6, relief="flat", background="#FF0000")
-style.configure("TLabel", padding=6, background="#9B94FF")
-style.configure("TFrame", background="#D8EFFF")
-
-# Create a main frame
-main_frame = ttk.Frame(root, padding="10")
-main_frame.pack(fill='both', expand=True)
-
-# Add a title label
-title_label = ttk.Label(main_frame, text="Web Scraper", font=("Helvetica", 16))
-title_label.grid(row=0, column=0, pady=10)
-
-# Frame for URL entries
-urls_frame = ttk.Frame(main_frame)
-urls_frame.grid(row=1, column=0, pady=10)
-
-# List to store URL entries
-url_entries = []
-
-# Add initial URL entry
-add_url_entry()
-
-# Buttons frame
-buttons_frame = ttk.Frame(main_frame)
-buttons_frame.grid(row=2, column=0, pady=10)
-
-# Button to add more URL entry fields
-add_url_button = ttk.Button(buttons_frame, text="Add URL", command=add_url_entry)
-add_url_button.grid(row=0, column=0, padx=5)
-
-# Button to start scraping
-scrape_button = ttk.Button(buttons_frame, text="Scrape Websites", command=validate_and_scrape)
-scrape_button.grid(row=0, column=1, padx=5)
-
-# Button to clear results
-clear_button = ttk.Button(buttons_frame, text="Clear Results", command=clear_results)
-clear_button.grid(row=0, column=2, padx=5)
-
-# Progress label
-progress_label = ttk.Label(main_frame, text="")
-progress_label.grid(row=3, column=0, pady=10)
-
-# Progress bar
-progress_bar = ttk.Progressbar(main_frame, orient='horizontal', length=400, mode='determinate')
-progress_bar.grid(row=4, column=0, pady=10)
-
-# Time label
-time_label = ttk.Label(main_frame, text="")
-time_label.grid(row=5, column=0, pady=10)
-
-# Configure grid weights
-main_frame.columnconfigure(0, weight=1)
-urls_frame.columnconfigure(0, weight=1)
-buttons_frame.columnconfigure(0, weight=1)
-buttons_frame.columnconfigure(1, weight=1)
-buttons_frame.columnconfigure(2, weight=1)
-
-# Start the main loop
-root.mainloop()
+if __name__ == "__main__":
+    base_url = "https://www.emag.ro/telefoane-mobile"
+    scrape_and_save(base_url)

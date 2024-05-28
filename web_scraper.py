@@ -10,8 +10,8 @@ logging.basicConfig(filename='scraper.log', level=logging.DEBUG,
 def scrape_multiple_websites(urls):
     """
     Function to scrape multiple websites concurrently.
-    """    
-    scraped_data = []
+    """
+    all_scraped_data = []
     
     start_time = time.time()
 
@@ -22,14 +22,14 @@ def scrape_multiple_websites(urls):
             url = future_to_url[future]
             try:
                 data = future.result()
-                scraped_data.append(data)
+                all_scraped_data.extend(data)
             except Exception as e:
                 logging.error(f"Error scraping {url}: {e}")
-                scraped_data.append({"url": url, "error": str(e)})
+                continue
     
     logging.info("Completed scraping all websites")
 
     end_time = time.time()
     total_time = end_time - start_time 
 
-    return scraped_data, total_time
+    return all_scraped_data, total_time

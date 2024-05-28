@@ -28,24 +28,29 @@ def parse_html(html_content):
     """
     try:
         soup = BeautifulSoup(html_content, 'html.parser')
-        title = soup.title.string if soup.title else 'No title'
-        
-        # Extract price and description if available
-        price = soup.find('p', class_='product-new-price')
-        description = soup.find('div', id='specifications-body')
-        disclaimer = soup.find('div', class_='disclaimer-section')
-        
-        price_text = price.text.strip() if price else 'No price found'
-        description_text = description.text.strip() if description else 'No description found'
-        disclaimer_text = disclaimer.text.strip() if disclaimer else 'No disclaimer found'
+        products = []
+
+        # Find all product elements
+        product_elements = soup.find_all('div', class_='card-item card-standard js-product-data')
+
+        for product in product_elements:
+            title_element = product.find('a', class_='card-v2-title')
+            price_element = product.find('p', class_='product-new-price')
+
+            title = title_element.text.strip() if title_element else 'No title'
+            price_text = price_element.text.strip() if price_element else 'No price found'
+
+            # Convert price to float if possible
+            price = ''.join(filter(str.isdigit, price_text.split()[0]))
+            price = float(price) if price else 0.0
+
+            products.append({
+                "title": title,
+                "price": price / 100
+            })
 
         logging.info("Successfully parsed HTML content")
-        return {
-            "title": title,
-            "price": price_text,
-            "description": description_text,
-            "disclaimer": disclaimer_text
-        }
+        return products
     except Exception as e:
         logging.error(f"Error parsing HTML content - {e}")
         return None
@@ -57,8 +62,6 @@ def scrape_website(url):
     html_content = make_request(url)
     if html_content:
         data = parse_html(html_content)
-        if data:
-            data['url'] = url  # Add the URL to the returned data
         return data
     else:
-        return {"url": url, "error": "Failed to retrieve content"}
+        return []
