@@ -24,6 +24,7 @@ Programul afișează următoarele în consolă:
 Total execution time: 1.62 seconds
 
 Number of products extracted: 60
+
 Average price: 2876.27
 Minimum price: 109.99
 Maximum price: 7299.99
