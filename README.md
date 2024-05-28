@@ -21,6 +21,14 @@ Programul afișează următoarele în consolă:
 2. Numărul de produse extrase 
 3. Prețurile medii, minime și maxime
 
+Total execution time: 1.68 seconds
+
+Number of products extracted: 60
+
+Average price: 2876.27
+Minimum price: 109.99
+Maximum price: 7299.99
+
 Se generează totodata:
 1. scraped_data.csv: Un fișier CSV care conține numele și prețurile tuturor produselor extrase. 
 2. chart10.png: O imagine a unui grafic cu cele mai scumpe 10 produse.
